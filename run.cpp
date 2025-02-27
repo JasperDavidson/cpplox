@@ -1,4 +1,5 @@
 #include "run.h"
+#include "scanner.h"
 
 #include <fstream>
 #include <iterator>
@@ -9,10 +10,12 @@
 static bool had_error;
 
 void run(const std::string& source) {
-	// Make a new scanner
-	// Make a list of tokens from that scanner
-	//
-	// Iterate over list of tokens from scanner
+	Scanner scanner(source);
+	std::vector<Token> tokens = scanner.scan_tokens();
+
+	for (int i = 0; i < tokens.size(); i++) {
+		std::cout << tokens.at(i).get_lexeme() << '\n';
+	}
 }
 
 void run_prompt() {

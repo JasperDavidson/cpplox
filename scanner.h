@@ -43,21 +43,16 @@ class Scanner {
 	std::vector<Token> token_list;
 
 	int start = 0;
-	int current = -1;
+	int current = 0;
 	int line = 1;
 
 	bool is_at_end() const;
 
-	char advance() {
-		return source.at(current++);
-	}
-
-	void scan_token() {
-		char c = advance();
-		switch (c) {
-
-		}
-	}
+	char advance();
+	bool match(char c);
+	char peek() const;
+	void add_token(TokenType type);
+	void scan_token();
 
 public:
 	Scanner(const std::string& source);
