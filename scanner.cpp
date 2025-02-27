@@ -32,9 +32,56 @@ char Scanner::peek() const {
 	return source.at(current);
 }
 
-void Scanner::add_token(TokenType type) {
+char Scanner::peek_next() const {
+	if (current + 1 >= source.length()) return '\0';
+	return source.at(current + 1);
+}
+
+bool Scanner::is_digit(char c) const {
+	return c >= '0' && c <= '9';
+}
+
+// Read a string until it terminates and store it as a token
+void Scanner::scan_string() {
+	// Read through tokens until the whole string is consumed
+	while (peek() != '"' && !is_at_end()) {
+		if (peek() == '\n') line++;
+		advance();
+	}
+
+	// Report an error if the file ended without string closure
+	if (is_at_end()) {
+		report_error(line, "Unterminated string");
+	}
+
+	// Clear the '"' character
+	advance();
+
+	std::string value = source.substr(start + 1, current - start - 1);
+	add_token(TokenType::STRING, value);
+}
+
+// Read a number until it terminates through '\n'
+void Scanner::scan_number() {
+	while (is_digit(source.at(current))) advance();
+
+	// Check for and advance past a fractional part
+	if (peek() == '.' && is_digit(peek_next())) {
+		advance();
+
+		while (is_digit(source.at(current))) advance();
+	}
+
+	add_token(TokenType::NUMBER, std::stod(source.substr(current, start)));
+}
+
+void Scanner::add_token(const TokenType& type) {
 	// Set the lexeme equal to a substring of the source based on current and start
 	std::string lexeme = source.substr(start, current - start);
+	add_token(type, lexeme);
+}
+
+void Scanner::add_token(const TokenType& type, const std::string& lexeme) {
 	token_list.push_back(Token(type, lexeme, line));
 }
 
@@ -83,8 +130,15 @@ void Scanner::scan_token() {
 
 		case '\n': line++; break;
 
+		case '"': scan_string(); break;
+
 		default:
-			report_error(line, "Invalid syntax error");
+			if (isDigit(c)) {
+				scan_number();
+			} else {
+				report_error(line, "Invalid syntax error");
+			}
+
 			break;
 	}
 }

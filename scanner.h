@@ -51,8 +51,15 @@ class Scanner {
 	char advance();
 	bool match(char c);
 	char peek() const;
-	void add_token(TokenType type);
+	char peek_next() const;
+	bool is_digit(char c) const;
+
+	void add_token(const TokenType& type);
+	void add_token(const TokenType& type, const std::string& lexeme);
+	
 	void scan_token();
+	void scan_string();
+	void scan_number();
 
 public:
 	Scanner(const std::string& source);
