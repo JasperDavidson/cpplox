@@ -145,6 +145,23 @@ void Scanner::scan_token() {
 			if (match('/')) {
 				// Comments go until the end of the line
 				while (peek() != '\n' && !is_at_end()) advance();
+			} else if (match('*')) {
+				// Adding support for multi-line block comments
+				while (peek() != '*' && peek_next() != '/' && !is_at_end()) {
+					if (peek() == '\n') {
+						line++;
+					}
+
+					advance();
+				}
+
+				// Clear the '*/'
+				advance(); advance();
+
+				if (peek() == '\n') {
+					advance();
+					line++;
+				}
 			} else {
 				add_token(TokenType::SLASH);
 			}
