@@ -1,7 +1,8 @@
 #include "scanner.h"
 #include "run.h"
+#include <variant>
 
-Token::Token(TokenType type, std::string lexeme, int line) : type(type), lexeme(lexeme), line(line) {};
+Token::Token(const TokenType& type, const scanner_variant& literal, const std::string& lexeme, int line) : type(type), literal(literal), lexeme(lexeme), line(line) {};
 
 TokenType Token::get_type() const { return type; }
 std::string Token::get_lexeme() const { return lexeme; }
@@ -41,6 +42,14 @@ bool Scanner::is_digit(char c) const {
 	return c >= '0' && c <= '9';
 }
 
+bool Scanner::is_alpha(char c) const {
+	return (c <= 'Z' && c >= 'A') || (c <= 'z' && c >= 'a') || (c == '_');
+}
+
+bool Scanner::is_alphanumeric(char c) const {
+	return is_digit(c) || is_alpha(c);
+}
+
 // Read a string until it terminates and store it as a token
 void Scanner::scan_string() {
 	// Read through tokens until the whole string is consumed
@@ -75,14 +84,33 @@ void Scanner::scan_number() {
 	add_token(TokenType::NUMBER, std::stod(source.substr(current, start)));
 }
 
-void Scanner::add_token(const TokenType& type) {
-	// Set the lexeme equal to a substring of the source based on current and start
+void Scanner::scan_identifier() {
+	while (is_alpha(peek())) advance();
+
 	std::string lexeme = source.substr(start, current - start);
-	add_token(type, lexeme);
+	TokenType token_type;
+
+	if (keywords.find(lexeme) != keywords.end()) {
+		token_type = keywords.at(lexeme);
+	} else {
+		token_type = TokenType::IDENTIFIER;
+	}
+
+	add_token(token_type, lexeme);
 }
 
-void Scanner::add_token(const TokenType& type, const std::string& lexeme) {
-	token_list.push_back(Token(type, lexeme, line));
+void Scanner::add_token(const TokenType& type) {
+	add_token(type, std::monostate());
+}
+
+void Scanner::add_token(const TokenType& type, const scanner_variant& literal) {
+	// Set the lexeme equal to a substring of the source based on current and start
+	std::string lexeme = source.substr(start, current - start);
+	add_token(type, literal, lexeme);
+}
+
+void Scanner::add_token(const TokenType& type, const scanner_variant& literal, const std::string& lexeme) {
+	token_list.push_back(Token(type, literal, lexeme, line));
 }
 
 void Scanner::scan_token() {
@@ -133,8 +161,10 @@ void Scanner::scan_token() {
 		case '"': scan_string(); break;
 
 		default:
-			if (isDigit(c)) {
+			if (is_digit(c)) {
 				scan_number();
+			} else if (is_alpha(c)) {
+				scan_identifier();
 			} else {
 				report_error(line, "Invalid syntax error");
 			}
@@ -149,6 +179,6 @@ std::vector<Token> Scanner::scan_tokens() {
 		scan_token();
 	}
 
-	token_list.push_back(Token(TokenType::EOFF, "", line));
+	token_list.push_back(Token(TokenType::EOFF, std::monostate(), "", line));
 	return token_list;
 }
