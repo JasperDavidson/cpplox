@@ -18,14 +18,9 @@
           {
             devShell = pkgs.mkShell {
               nativeBuildInputs = [
-                # builder
-                # p.gnumake
-                # p.bear
                 pkgs.cmake
-                # debugger
                 llvm.lldb
 
-                # XXX: the order of include matters
                 pkgs.clang-tools
                 llvm.clang # clangd
 
