@@ -1,3 +1,4 @@
 #include "expr.h"
 
-Test::Test(int hello, int hi, double welcome) : hello(hello), hi(hi), welcome(welcome) {};
+template <typename T>
+Expr<T>::Test::Test(int hello, int hi, double welcome) : hello(hello), hi(hi), welcome(welcome) {};
