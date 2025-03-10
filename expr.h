@@ -6,6 +6,8 @@ public:
 	class Visitor {
 		T virtual visit_test_expr(Test expr);
 	};
+
+	virtual T accept(Expr::Visitor visitor);
 };
 
 template <typename T>

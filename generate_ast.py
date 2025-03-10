@@ -28,6 +28,8 @@ def define_ast(output_dir, base_name, types):
 
     header_file.write("\t};\n")
 
+    header_file.write("\n\tvirtual T accept(" + base_name + "::Visitor visitor);\n")
+
     header_file.write("};\n")
 
     # Add all the required "types", implemented as derived classes
