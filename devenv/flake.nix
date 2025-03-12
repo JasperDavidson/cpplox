@@ -37,6 +37,11 @@
                 (lib.makeSearchPathOutput "dev" "include" [ llvm.libcxx ])
                 (lib.makeSearchPath "resource-root/include" [ llvm.clang ])
               ];
+
+              shellHook = ''
+                export SHELL="${pkgs.zsh}/bin/zsh"
+                exec $SHELL
+              '';
             };
           }
     );

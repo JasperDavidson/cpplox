@@ -7,7 +7,7 @@ public:
 		T virtual visit_test_expr(Test expr);
 	};
 
-	virtual T accept(Expr::Visitor visitor);
+	virtual T accept(Visitor visitor);
 };
 
 template <typename T>

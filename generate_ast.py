@@ -14,7 +14,7 @@ def define_ast(output_dir, base_name, types):
     # Define base class
     header_file.write("template <typename T>\n")
     header_file.write("class " + base_name + " {\n\t")
-    
+
     for type in types:
         type_name = type.split(":")[0].strip()
         header_file.write("class " + type_name + ";\n")
@@ -28,7 +28,7 @@ def define_ast(output_dir, base_name, types):
 
     header_file.write("\t};\n")
 
-    header_file.write("\n\tvirtual T accept(" + base_name + "::Visitor visitor);\n")
+    header_file.write("\n\tvirtual T accept(Visitor" + " visitor);\n")
 
     header_file.write("};\n")
 
