@@ -7,8 +7,9 @@ def define_ast(output_dir, base_name, types):
     header_path = output_dir + "/" + base_name + ".h"
     header_file = open(os.path.expanduser(header_path), "w+")
 
-    # Header guard begin
+    # Header guard begin and includes
     header_file.write("#ifndef EXPR_H\n#define RUN_H\n\n")
+    header_file.write("#include \"scanner.h\"\n\n")
 
     # Include header file
     source_file.write("#include \"" + base_name + ".h\"\n")
@@ -85,4 +86,5 @@ def define_type(source_file, header_file, base_name, class_name, field_list):
     source_file.write("\tvisitor->visit_" + class_name.lower() + "_" + base_name.lower() + "(this);\n")
     source_file.write("};\n")
 
-define_ast(os.path.dirname(os.path.abspath(__file__)), "expr", ["Test*int hello, int hi, double welcome", "TestTwo*double really, long hope, int this_works"])
+define_ast(os.path.dirname(os.path.abspath(__file__)), "expr", ["Binary*Expr left, Token operate, Expr right", "Grouping*Expr expression", "Literal*std::monostate value",
+                                                                "Unary*Token operate, Expr right"])

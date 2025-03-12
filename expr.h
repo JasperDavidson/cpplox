@@ -1,40 +1,65 @@
 #ifndef EXPR_H
 #define RUN_H
 
+#include "scanner.h"
+
 template <typename T>
 class Expr {
-	class Test;
-	class TestTwo;
+	class Binary;
+	class Grouping;
+	class Literal;
+	class Unary;
 	
 public:
 	class Visitor {
-		virtual T visit_test_expr(Test expr);
-		virtual T visit_testtwo_expr(TestTwo expr);
+		virtual T visit_binary_expr(Binary expr);
+		virtual T visit_grouping_expr(Grouping expr);
+		virtual T visit_literal_expr(Literal expr);
+		virtual T visit_unary_expr(Unary expr);
 	};
 
 	virtual T accept(Visitor* visitor);
 };
 
 template <typename T>
-class Expr<T>::Test : public Expr<T> {
-	const int hello;
-	const int hi;
-	const double welcome;
+class Expr<T>::Binary : public Expr<T> {
+	const Expr left;
+	const Token operate;
+	const Expr right;
 
  public:
-	Test(int hello, int hi, double welcome);
+	Binary(Expr left, Token operate, Expr right);
 
 	T accept(Visitor* visitor) override;
 };
 
 template <typename T>
-class Expr<T>::TestTwo : public Expr<T> {
-	const double really;
-	const long hope;
-	const int this_works;
+class Expr<T>::Grouping : public Expr<T> {
+	const Expr expression;
 
  public:
-	TestTwo(double really, long hope, int this_works);
+	Grouping(Expr expression);
+
+	T accept(Visitor* visitor) override;
+};
+
+template <typename T>
+class Expr<T>::Literal : public Expr<T> {
+	const std::monostate value;
+
+ public:
+	Literal(std::monostate value);
+
+	T accept(Visitor* visitor) override;
+};
+
+template <typename T>
+class Expr<T>::Unary : public Expr<T> {
+	const Token operate;
+	const Expr right;
+
+ public:
+	Unary(Token operate, Expr right);
 
 	T accept(Visitor* visitor) override;
 };
