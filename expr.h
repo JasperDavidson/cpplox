@@ -1,3 +1,6 @@
+#ifndef EXPR_H
+#define RUN_H
+
 template <typename T>
 class Expr {
 	class Test;
@@ -35,3 +38,5 @@ class Expr<T>::TestTwo : public Expr<T> {
 
 	T accept(Visitor* visitor) override;
 };
+
+#endif

@@ -7,6 +7,10 @@ def define_ast(output_dir, base_name, types):
     header_path = output_dir + "/" + base_name + ".h"
     header_file = open(os.path.expanduser(header_path), "w+")
 
+    # Header guard begin
+    header_file.write("#ifndef EXPR_H\n#define RUN_H\n\n")
+
+    # Include header file
     source_file.write("#include \"" + base_name + ".h\"\n")
 
     base_name = base_name.capitalize()
@@ -40,6 +44,9 @@ def define_ast(output_dir, base_name, types):
         fields = string.split("*")[1].strip()
         define_type(source_file, header_file, base_name, class_name, fields)
         header_file.write("\n};\n")
+
+    # Header guard end
+    header_file.write("\n#endif")
 
 def define_type(source_file, header_file, base_name, class_name, field_list):
     # Prepare the class definition
