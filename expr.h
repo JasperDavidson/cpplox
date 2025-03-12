@@ -1,67 +1,67 @@
 #ifndef EXPR_H
-#define RUN_H
+#define EXPR_H
 
 #include "scanner.h"
 
 template <typename T>
 class Expr {
+public:
 	class Binary;
 	class Grouping;
 	class Literal;
 	class Unary;
 	
-public:
 	class Visitor {
-		virtual T visit_binary_expr(Binary expr);
-		virtual T visit_grouping_expr(Grouping expr);
-		virtual T visit_literal_expr(Literal expr);
-		virtual T visit_unary_expr(Unary expr);
+		virtual T visit_binary_expr(const Binary& expr);
+		virtual T visit_grouping_expr(const Grouping& expr);
+		virtual T visit_literal_expr(const Literal& expr);
+		virtual T visit_unary_expr(const Unary& expr);
 	};
 
-	virtual T accept(Visitor* visitor);
+	virtual T accept(const Visitor& visitor);
 };
 
 template <typename T>
 class Expr<T>::Binary : public Expr<T> {
-	const Expr left;
-	const Token operate;
-	const Expr right;
+	const Expr* left;
+	const Token* operate;
+	const Expr* right;
 
- public:
-	Binary(Expr left, Token operate, Expr right);
+public:
+	Binary(const Expr* left, const Token* operate, const Expr* right);
 
-	T accept(Visitor* visitor) override;
+	T accept(const Visitor& visitor) override;
 };
 
 template <typename T>
 class Expr<T>::Grouping : public Expr<T> {
-	const Expr expression;
+	const Expr* expression;
 
- public:
-	Grouping(Expr expression);
+public:
+	Grouping(const Expr* expression);
 
-	T accept(Visitor* visitor) override;
+	T accept(const Visitor& visitor) override;
 };
 
 template <typename T>
 class Expr<T>::Literal : public Expr<T> {
-	const std::monostate value;
+	const std::monostate* value;
 
- public:
-	Literal(std::monostate value);
+public:
+	Literal(const std::monostate* value);
 
-	T accept(Visitor* visitor) override;
+	T accept(const Visitor& visitor) override;
 };
 
 template <typename T>
 class Expr<T>::Unary : public Expr<T> {
-	const Token operate;
-	const Expr right;
+	const Token* operate;
+	const Expr* right;
 
- public:
-	Unary(Token operate, Expr right);
+public:
+	Unary(const Token* operate, const Expr* right);
 
-	T accept(Visitor* visitor) override;
+	T accept(const Visitor& visitor) override;
 };
 
 #endif
