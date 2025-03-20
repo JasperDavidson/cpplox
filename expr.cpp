@@ -17,7 +17,7 @@ T Expr<T>::Grouping::Grouping::accept(const Visitor& visitor) {
 };
 
 template <typename T>
-Expr<T>::Literal::Literal(const std::monostate* value) : value(value) {};
+Expr<T>::Literal::Literal(const expr_variant* value) : value(value) {};
 
 template <typename T>
 T Expr<T>::Literal::Literal::accept(const Visitor& visitor) {

@@ -9,12 +9,16 @@ def define_ast(output_dir, base_name, types):
 
     # Header guard begin and includes
     header_file.write("#ifndef EXPR_H\n#define EXPR_H\n\n")
-    header_file.write("#include \"scanner.h\"\n\n")
+    header_file.write("#include \"scanner.h\"\n")
+    header_file.write("#include <variant>\n\n")
 
     # Include header file
     source_file.write("#include \"" + base_name + ".h\"\n")
 
     base_name = base_name.capitalize()
+
+    # Define the variant type
+    header_file.write("using expr_variant = std::variant<std::monostate, double, std::string>;\n\n")
 
     # Define base class
     header_file.write("template <typename T>\n")
@@ -57,14 +61,16 @@ def define_type(source_file, header_file, base_name, class_name, field_list):
     fields = field_list.split(", ")
 
     # Write each field to the class as a... field
+    header_file.write("public:\n")
     for field in fields:
         split_space = field.split(" ")
         header_file.write("\t")
         header_file.write("const " + split_space[0].strip() + "* " + split_space[1].strip() + ";")
         header_file.write("\n")
+    header_file.write("\n\t")
 
     # Declare the constructor in the header file
-    header_file.write("\npublic:\n\t")
+    # header_file.write("\npublic:\n\t")
     header_file.write(class_name + "(")
     for i in range(len(fields)):
         field = fields[i].split(" ")
@@ -109,5 +115,5 @@ def define_type(source_file, header_file, base_name, class_name, field_list):
     source_file.write("\tvisitor->visit_" + class_name.lower() + "_" + base_name.lower() + "(this);\n")
     source_file.write("};\n")
 
-define_ast(os.path.dirname(os.path.abspath(__file__)), "expr", ["Binary*Expr left, Token operate, Expr right", "Grouping*Expr expression", "Literal*std::monostate value",
+define_ast(os.path.dirname(os.path.abspath(__file__)), "expr", ["Binary*Expr left, Token operate, Expr right", "Grouping*Expr expression", "Literal*expr_variant value",
                                                                 "Unary*Token operate, Expr right"])
