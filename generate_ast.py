@@ -38,7 +38,7 @@ def define_ast(output_dir, base_name, types):
 
     header_file.write("\t};\n")
 
-    header_file.write("\n\tvirtual T accept(const Visitor& visitor);\n")
+    header_file.write("\n\tvirtual T accept(const Visitor& visitor) const;\n")
 
     header_file.write("};\n")
 
@@ -107,11 +107,11 @@ def define_type(source_file, header_file, base_name, class_name, field_list):
     source_file.write(" {};\n\n")
 
     # Declare the visitor accept method
-    header_file.write("\n\n\tT " + "accept(const Visitor& visitor) override;")
+    header_file.write("\n\n\tT " + "accept(const Visitor& visitor) const override;")
 
     # Define the visitor accept method
     source_file.write("template <typename T>\n")
-    source_file.write("T " + base_name + "<T>::" + class_name + "::" + class_name + "::accept(const Visitor& visitor) {\n")
+    source_file.write("T " + base_name + "<T>::" + class_name + "::" + class_name + "::accept(const Visitor& visitor) const {\n")
     source_file.write("\tvisitor->visit_" + class_name.lower() + "_" + base_name.lower() + "(this);\n")
     source_file.write("};\n")
 

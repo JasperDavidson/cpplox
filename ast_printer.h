@@ -11,7 +11,7 @@ class AstPrinter : public Expr<std::string>::Visitor {
 	// Accepts a variadic number of argument types, and accepts a variadic number of arguments that fit those types
 	// Important because we need to be able to pass in different kinds of expressions, and varying numbers of those expressions
 	template <typename... Exprs>
-	std::string parenthesize(const std::string& name, const Exprs&... exprs);
+	std::string parenthesize(const std::string& name, const Exprs*... exprs) const;
 
 public:
 

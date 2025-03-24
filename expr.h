@@ -21,7 +21,7 @@ public:
 		virtual T visit_unary_expr(const Unary& expr);
 	};
 
-	virtual T accept(const Visitor& visitor);
+	virtual T accept(const Visitor& visitor) const;
 };
 
 template <typename T>
@@ -33,7 +33,7 @@ public:
 
 	Binary(const Expr* left, const Token* operate, const Expr* right);
 
-	T accept(const Visitor& visitor) override;
+	T accept(const Visitor& visitor) const override;
 };
 
 template <typename T>
@@ -43,7 +43,7 @@ public:
 
 	Grouping(const Expr* expression);
 
-	T accept(const Visitor& visitor) override;
+	T accept(const Visitor& visitor) const override;
 };
 
 template <typename T>
@@ -53,7 +53,7 @@ public:
 
 	Literal(const expr_variant* value);
 
-	T accept(const Visitor& visitor) override;
+	T accept(const Visitor& visitor) const override;
 };
 
 template <typename T>
@@ -64,7 +64,7 @@ public:
 
 	Unary(const Token* operate, const Expr* right);
 
-	T accept(const Visitor& visitor) override;
+	T accept(const Visitor& visitor) const override;
 };
 
 #endif
